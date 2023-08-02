@@ -94,16 +94,16 @@ const Crawler = async (obj) => {
             listChap = listChap.map((v) => `https://hentaivn.tv${v}`);
         }
 
-        // tao folder name
+      
         let createFolder = `./${folderName}/${nameOfManga}`;
         if (!fs.existsSync(createFolder)) fs.mkdirSync(createFolder);
 
-        // so thu tu IMAGE
+ 
         let sttImage = 0;
 
         // cut array, filter chapter
         listChap = listChap.slice(0);
-        console.log(listChap.length, "--------------------");
+        console.log(listChap.length, "------------------");
         if (listChap.length == 0) return;
 
         // get list img and download img
