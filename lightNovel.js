@@ -24,7 +24,6 @@ const Crawler = async (obj) => {
         headless: false,
         executablePath:
             "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        // "C:\\Program Files\\CocCoc\\Browser\\Application\\browser.exe",
         args: [
             "--start-maximized",
             "--test-type",
