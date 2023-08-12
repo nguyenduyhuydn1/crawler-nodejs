@@ -187,7 +187,7 @@ const downloadFileImg = async (fileUrl, index, folder) => {
     //     );
     // }
     let nh2 = [
-      
+        2548677
     ];
 
     let obj = {
