@@ -34,6 +34,8 @@ const downloadFileImg = async (url, index, folder, referer) => {
     await recursionDownload(url, index, folder, referer);
 };
 
+
+
 (async () => {
     console.time("Time: ");
     let arr = [

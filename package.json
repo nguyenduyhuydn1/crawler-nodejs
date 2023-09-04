@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "description": "",
   "main": "fetchUrl-hvn.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.4.0",
+    "axios": "^1.5.0",
     "node-fetch": "^3.3.2",
     "playwright-extra": "^4.3.6",
+    "puppeteer": "^21.1.0",
+    "puppeteer-core": "^21.0.3",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }

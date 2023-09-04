@@ -26,6 +26,27 @@ const downloadFile = async (url, index, folder, referer) => {
     }
 };
 
+
+async function autoScroll(page) {
+    await page.evaluate(async () => {
+        await new Promise((resolve) => {
+            var totalHeight = 0;
+            var distance = 100;
+            var timer = setInterval(() => {
+                var scrollHeight = document.body.scrollHeight;
+                window.scrollBy(0, distance);
+                totalHeight += distance;
+
+                if (totalHeight >= scrollHeight - window.innerHeight) {
+                    clearInterval(timer);
+                    resolve();
+                }
+            }, 100);
+        });
+    });
+}
+
+
 const Crawler = async (obj) => {
     const {
         referer,
@@ -63,7 +84,7 @@ const Crawler = async (obj) => {
         console.log("\x1b[2J");
         try {
             await page.goto(itemManga);
-            await new Promise((reso) => setTimeout(reso, 10000));
+            await new Promise((reso) => setTimeout(reso, 1000));
         } catch (err) {
             console.error("error page --->", itemManga);
             return;
@@ -94,11 +115,11 @@ const Crawler = async (obj) => {
             listChap = listChap.map((v) => `https://hentaivn.tv${v}`);
         }
 
-      
+
         let createFolder = `./${folderName}/${nameOfManga}`;
         if (!fs.existsSync(createFolder)) fs.mkdirSync(createFolder);
 
- 
+
         let sttImage = 0;
 
         // cut array, filter chapter
@@ -116,13 +137,30 @@ const Crawler = async (obj) => {
                 await new Promise((reso) => setTimeout(reso, 1000));
             }
 
+            // await page.evaluate(async () => {
+            //     await new Promise((resolve) => {
+            //         var totalHeight = 0;
+            //         var distance = 5000;
+            //         var timer = setInterval(() => {
+            //             var scrollHeight = document.body.scrollHeight;
+            //             window.scrollBy(0, distance);
+            //             totalHeight += distance;
+
+            //             if (totalHeight >= scrollHeight - window.innerHeight) {
+            //                 clearInterval(timer);
+            //                 resolve();
+            //             }
+            //         }, 100);
+            //     });
+            // });
+
+            console.log("ok");
+
             let listImg = await page.evaluate((a) => {
                 let listImg = [];
                 let listLink = document.querySelectorAll(a);
                 for (const itemLink of listLink) {
-                    listImg.push(
-                        itemLink?.querySelector("img")?.src || itemLink?.src
-                    );
+                    listImg.push(itemLink.getAttribute('data-src'));
                 }
                 return listImg;
             }, selectorAllListImage);
@@ -146,63 +184,37 @@ const Crawler = async (obj) => {
     console.log("end-loop");
 };
 
-let args = argv.slice(2);
-let obj;
 
-if (args.length > 0) {
-    if (args[0] === "nettruyen") {
-    }
+let obj = {
+    referer: "https://hentaivn.tv/",
+    listManga: [
+        "https://hentaivn.autos/25683-doc-truyen-onimara.html"
+    ],
+    selectorAllListChap: "#inner-listshowchapter > table > tbody > tr",
+    selectorNameOfManga:
+        "body > div.container > div > div.page-left > div:nth-child(2) > div.page-info > h1",
+    folderName: "hvn",
+    selectorAllListImage: "#image img",
+    domain: `https://hentaivn.tv`,
+};
+console.log("hentaivn");
 
-    if (args[0] === "truyenqq") {
-        obj = {
-            referer: "https://www.truyenqq.com.vn/",
-            listManga: [
-                "https://www.truyenqq.com.vn/truyen-tranh/ta-luyen-khi-ba-ngan-nam-8419",
-            ],
-            selectorAllListChap:
-                "body > div.content > div.div_middle > div.main_content > div.book_detail > div.list_chapter > div > div",
-            selectorNameOfManga:
-                "body > div.content > div.div_middle > div.main_content > div.book_detail > div.book_info > div.book_other > h1",
-            folderName: "TQ",
-            selectorAllListImage: `#chapter_content > div > div.chapter_content > [id*="page"]`,
-            domain: `https://${args[0]}`,
-        };
-    }
-    console.log(args[0]);
-} else {
-    obj = {
-        referer: "https://hentaivn.tv/",
-        listManga: [
+// tim kiem the loai
+// for (let x of document.querySelectorAll(
+//     "body > div.container > div.main > div.block-left > div:nth-child(3) > ul:nth-child(4) > li"
+// )) {
+//     console.log(
+//         "https://hentaivn.tv" + x.querySelector("a").getAttribute("href")
+//     );
+// }
 
-          
-
-        ],
-        selectorAllListChap: "#inner-listshowchapter > table > tbody > tr",
-        selectorNameOfManga:
-            "body > div.container > div > div.page-left > div:nth-child(2) > div.page-info > h1",
-        folderName: "hvn",
-        selectorAllListImage: "#image img",
-        domain: `https://hentaivn.tv`,
-    };
-    console.log("hentaivn");
-
-    // tim kiem the loai
-    // for (let x of document.querySelectorAll(
-    //     "body > div.container > div.main > div.block-left > div:nth-child(3) > ul:nth-child(4) > li"
-    // )) {
-    //     console.log(
-    //         "https://hentaivn.tv" + x.querySelector("a").getAttribute("href")
-    //     );
-    // }
-
-    // tim kiem nang cao
-    // for (let x of document.querySelectorAll(
-    //     "#container > div > div.main-box > div.box-box.textbox > ul > li"
-    // )) {
-    //     console.log(
-    //         "https://hentaivn.tv" + x.querySelector("a").getAttribute("href")
-    //     );
-    // }
-}
+// tim kiem nang cao
+// for (let x of document.querySelectorAll(
+//     "#container > div > div.main-box > div.box-box.textbox > ul > li"
+// )) {
+//     console.log(
+//         "https://hentaivn.tv" + x.querySelector("a").getAttribute("href")
+//     );
+// }
 
 Crawler(obj);
